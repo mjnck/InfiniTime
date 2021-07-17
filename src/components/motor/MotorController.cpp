@@ -1,31 +1,28 @@
 #include "MotorController.h"
 #include <hal/nrf_gpio.h>
 #include "systemtask/SystemTask.h"
-#include "app_timer.h"
-
-APP_TIMER_DEF(vibTimer);
 
 using namespace Pinetime::Controllers;
 
 MotorController::MotorController(Controllers::Settings& settingsController) : settingsController {settingsController} {
-}
-
-void MotorController::Init() {
   nrf_gpio_cfg_output(pinMotor);
   nrf_gpio_pin_set(pinMotor);
-  app_timer_create(&vibTimer, APP_TIMER_MODE_SINGLE_SHOT, vibrate);
+  motorTimer = xTimerCreate("MotorTimer", 0, pdFALSE, this, StopMotor);
 }
 
 void MotorController::SetDuration(uint8_t motorDuration) {
-
-  if (settingsController.GetVibrationStatus() == Controllers::Settings::Vibration::OFF)
+  if (settingsController.GetVibrationStatus() == Controllers::Settings::Vibration::OFF) {
     return;
-
+  }
   nrf_gpio_pin_clear(pinMotor);
-  /* Start timer for motorDuration miliseconds and timer triggers vibrate() when it finishes*/
-  app_timer_start(vibTimer, APP_TIMER_TICKS(motorDuration), NULL);
+  if (xTimerChangePeriod(motorTimer, pdMS_TO_TICKS(motorDuration), 0) == pdFAIL) {
+    StopMotor(nullptr);
+  }
+  if (xTimerStart(motorTimer, 0) == pdFAIL) {
+    StopMotor(nullptr);
+  }
 }
 
-void MotorController::vibrate(void* p_context) {
+void MotorController::StopMotor(void* p_context) {
   nrf_gpio_pin_set(pinMotor);
 }

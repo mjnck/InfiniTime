@@ -104,12 +104,10 @@ void SystemTask::Work() {
   NRF_LOG_INFO("Last reset reason : %s", Pinetime::Drivers::Watchdog::ResetReasonToString(watchdog.ResetReason()));
   APP_GPIOTE_INIT(2);
 
-  app_timer_init();
-  
   spi.Init();
   spiNorFlash.Init();
   spiNorFlash.Wakeup();
-  
+
   fs.Init();
 
   nimbleController.Init();
@@ -121,10 +119,8 @@ void SystemTask::Work() {
   touchPanel.Init();
   dateTimeController.Register(this);
   batteryController.Init();
-  motorController.Init();
   motionSensor.SoftReset();
   timerController.Register(this);
-  timerController.Init();
 
   // Reset the TWI device because the motion sensor chip most probably crashed it...
   twiMaster.Sleep();
