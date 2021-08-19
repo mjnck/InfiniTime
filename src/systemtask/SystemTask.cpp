@@ -111,6 +111,8 @@ void SystemTask::Work() {
   NRF_LOG_INFO("Last reset reason : %s", Pinetime::Drivers::Watchdog::ResetReasonToString(watchdog.ResetReason()));
   APP_GPIOTE_INIT(2);
 
+  app_timer_init();
+
   spi.Init();
   spiNorFlash.Init();
   spiNorFlash.Wakeup();
@@ -125,6 +127,7 @@ void SystemTask::Work() {
   touchPanel.Init();
   dateTimeController.Register(this);
   batteryController.Init();
+  motorController.Init();
   motionSensor.SoftReset();
   timerController.Register(this);
 

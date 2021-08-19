@@ -1,24 +1,50 @@
 #include "MotorController.h"
 #include <hal/nrf_gpio.h>
 #include "systemtask/SystemTask.h"
+#include "app_timer.h"
+
+APP_TIMER_DEF(shortVibTimer);
+APP_TIMER_DEF(longVibTimer);
 
 using namespace Pinetime::Controllers;
 
 MotorController::MotorController(Controllers::Settings& settingsController) : settingsController {settingsController} {
-  nrf_gpio_cfg_output(pinMotor);
-  nrf_gpio_pin_set(pinMotor);
-  motorTimer = xTimerCreate("MotorTimer", 0, pdFALSE, this, StopMotor);
 }
 
-void MotorController::SetDuration(uint8_t motorDuration) {
+void MotorController::Init() {
+  nrf_gpio_cfg_output(pinMotor);
+  nrf_gpio_pin_set(pinMotor);
+  app_timer_init();
+
+  app_timer_create(&shortVibTimer, APP_TIMER_MODE_SINGLE_SHOT, StopMotor);
+  app_timer_create(&longVibTimer, APP_TIMER_MODE_REPEATED, Ring);
+}
+
+void MotorController::Ring(void* p_context) {
+  auto* motorController = static_cast<MotorController*>(p_context);
+  motorController->RunForDuration(50);
+}
+
+void MotorController::RunForDuration(uint8_t motorDuration) {
   if (settingsController.GetVibrationStatus() == Controllers::Settings::Vibration::OFF) {
     return;
   }
-  if (xTimerChangePeriod(motorTimer, pdMS_TO_TICKS(motorDuration), 0) == pdPASS) {
-    if (xTimerStart(motorTimer, 0) == pdPASS) {
-      nrf_gpio_pin_clear(pinMotor);
-    }
+
+  nrf_gpio_pin_clear(pinMotor);
+  app_timer_start(shortVibTimer, APP_TIMER_TICKS(motorDuration), nullptr);
+}
+
+void MotorController::StartRinging() {
+  if (settingsController.GetVibrationStatus() == Controllers::Settings::Vibration::OFF) {
+    return;
   }
+  Ring(this);
+  app_timer_start(longVibTimer, APP_TIMER_TICKS(1000), this);
+}
+
+void MotorController::StopRinging() {
+  app_timer_stop(longVibTimer);
+  nrf_gpio_pin_set(pinMotor);
 }
 
 void MotorController::StopMotor(void* p_context) {

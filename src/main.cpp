@@ -3,6 +3,7 @@
 #include <hal/nrf_wdt.h>
 #include <legacy/nrf_drv_clock.h>
 #include <libraries/gpiote/app_gpiote.h>
+#include <libraries/timer/app_timer.h>
 #include <softdevice/common/nrf_sdh.h>
 
 // nimble

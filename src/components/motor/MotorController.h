@@ -1,7 +1,7 @@
 #pragma once
 
-#include <FreeRTOS.h>
-#include <timers.h>
+#include <cstdint>
+#include "app_timer.h"
 #include "components/settings/Settings.h"
 
 namespace Pinetime {
@@ -11,12 +11,15 @@ namespace Pinetime {
     class MotorController {
     public:
       MotorController(Controllers::Settings& settingsController);
-      void SetDuration(uint8_t motorDuration);
+      void Init();
+      void RunForDuration(uint8_t motorDuration);
+      void StartRinging();
+      static void StopRinging();
 
     private:
+      static void Ring(void* p_context);
       Controllers::Settings& settingsController;
       static void StopMotor(void* p_context);
-      TimerHandle_t motorTimer;
     };
   }
 }
