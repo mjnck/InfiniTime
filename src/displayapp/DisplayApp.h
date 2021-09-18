@@ -14,7 +14,9 @@
 #include "components/settings/Settings.h"
 #include "displayapp/screens/Screen.h"
 #include "components/timer/TimerController.h"
+#include "components/alarm/AlarmController.h"
 #include "touchhandler/TouchHandler.h"
+
 #include "Messages.h"
 
 namespace Pinetime {
@@ -56,6 +58,7 @@ namespace Pinetime {
                  Pinetime::Controllers::MotorController& motorController,
                  Pinetime::Controllers::MotionController& motionController,
                  Pinetime::Controllers::TimerController& timerController,
+                 Pinetime::Controllers::AlarmController& alarmController,
                  Pinetime::Controllers::TouchHandler& touchHandler);
       void Start();
       void PushMessage(Display::Messages msg);
@@ -80,6 +83,7 @@ namespace Pinetime {
       Pinetime::Controllers::MotorController& motorController;
       Pinetime::Controllers::MotionController& motionController;
       Pinetime::Controllers::TimerController& timerController;
+      Pinetime::Controllers::AlarmController& alarmController;
       Pinetime::Controllers::TouchHandler& touchHandler;
 
       Pinetime::Controllers::FirmwareValidator validator;
