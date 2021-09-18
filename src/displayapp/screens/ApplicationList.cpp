@@ -34,12 +34,6 @@ ApplicationList::~ApplicationList() {
   lv_obj_clean(lv_scr_act());
 }
 
-bool ApplicationList::Refresh() {
-  if (running)
-    running = screens.Refresh();
-  return running;
-}
-
 bool ApplicationList::OnTouchEvent(Pinetime::Applications::TouchEvents event) {
   return screens.OnTouchEvent(event);
 }
@@ -64,7 +58,7 @@ std::unique_ptr<Screen> ApplicationList::CreateScreen2() {
     {"2", Apps::Twos},
     {Symbols::chartLine, Apps::Motion},
     {Symbols::drum, Apps::Metronome},
-    {"", Apps::None},
+    {Symbols::clock, Apps::Alarm},
   }};
 
   return std::make_unique<Screens::Tile>(1, 2, app, settingsController, batteryController, dateTimeController, applications);

@@ -92,6 +92,9 @@ set(SDK_SOURCE_FILES
 set(TINYCRYPT_SRC
         libs/mynewt-nimble/ext/tinycrypt/src/aes_encrypt.c
         libs/mynewt-nimble/ext/tinycrypt/src/utils.c
+        libs/mynewt-nimble/ext/tinycrypt/src/cmac_mode.c
+        libs/mynewt-nimble/ext/tinycrypt/src/ecc.c
+        libs/mynewt-nimble/ext/tinycrypt/src/ecc_dh.c
         )
 
 set(NIMBLE_SRC
@@ -104,6 +107,10 @@ set(NIMBLE_SRC
         libs/mynewt-nimble/nimble/host/src/ble_l2cap.c
         libs/mynewt-nimble/nimble/host/src/ble_hs_mbuf.c
         libs/mynewt-nimble/nimble/host/src/ble_sm.c
+        libs/mynewt-nimble/nimble/host/src/ble_sm_cmd.c
+        libs/mynewt-nimble/nimble/host/src/ble_sm_lgcy.c
+        libs/mynewt-nimble/nimble/host/src/ble_sm_alg.c
+        libs/mynewt-nimble/nimble/host/src/ble_sm_sc.c
         libs/mynewt-nimble/nimble/host/src/ble_gap.c
         libs/mynewt-nimble/nimble/host/src/ble_gatts.c
         libs/mynewt-nimble/nimble/host/src/ble_gattc.c
@@ -127,10 +134,6 @@ set(NIMBLE_SRC
         libs/mynewt-nimble/nimble/host/src/ble_hs_atomic.c
         libs/mynewt-nimble/nimble/host/src/ble_hs_adv.c
         libs/mynewt-nimble/nimble/host/src/ble_hs_flow.c
-        libs/mynewt-nimble/nimble/host/src/ble_sm.c
-        libs/mynewt-nimble/nimble/host/src/ble_sm_cmd.c
-        libs/mynewt-nimble/nimble/host/src/ble_sm_lgcy.c
-        libs/mynewt-nimble/nimble/host/src/ble_sm_alg.c
         libs/mynewt-nimble/nimble/host/src/ble_hs_mqueue.c
         libs/mynewt-nimble/nimble/host/src/ble_hs_stop.c
         libs/mynewt-nimble/nimble/host/src/ble_hs_startup.c
@@ -418,6 +421,8 @@ list(APPEND SOURCE_FILES
         displayapp/screens/BatteryInfo.cpp
         displayapp/screens/Steps.cpp
         displayapp/screens/Timer.cpp
+        displayapp/screens/Alarm.cpp
+        displayapp/Colors.cpp
 
         ## Settings
         displayapp/screens/settings/QuickSettings.cpp
@@ -427,6 +432,7 @@ list(APPEND SOURCE_FILES
         displayapp/screens/settings/SettingWakeUp.cpp
         displayapp/screens/settings/SettingDisplay.cpp
         displayapp/screens/settings/SettingSteps.cpp
+        displayapp/screens/settings/SettingPineTimeStyle.cpp
 
         ## Watch faces
         displayapp/icons/bg_clock.c
@@ -472,6 +478,7 @@ list(APPEND SOURCE_FILES
         components/motor/MotorController.cpp
         components/settings/Settings.cpp
         components/timer/TimerController.cpp
+        components/alarm/AlarmController.cpp
         components/fs/FS.cpp
         drivers/Cst816s.cpp
         FreeRTOS/port.c
@@ -495,6 +502,8 @@ list(APPEND SOURCE_FILES
         components/heartrate/Biquad.cpp
         components/heartrate/Ptagc.cpp
         components/heartrate/HeartRateController.cpp
+
+        touchhandler/TouchHandler.cpp
         )
 
 list(APPEND RECOVERY_SOURCE_FILES
@@ -536,6 +545,7 @@ list(APPEND RECOVERY_SOURCE_FILES
         components/firmwarevalidator/FirmwareValidator.cpp
         components/settings/Settings.cpp
         components/timer/TimerController.cpp
+        components/alarm/AlarmController.cpp
         drivers/Cst816s.cpp
         FreeRTOS/port.c
         FreeRTOS/port_cmsis_systick.c
@@ -552,6 +562,7 @@ list(APPEND RECOVERY_SOURCE_FILES
         components/heartrate/Ptagc.cpp
         components/motor/MotorController.cpp
         components/fs/FS.cpp
+        touchhandler/TouchHandler.cpp
         )
 
 list(APPEND RECOVERYLOADER_SOURCE_FILES
@@ -607,6 +618,8 @@ set(INCLUDE_FILES
         displayapp/screens/Metronome.h
         displayapp/screens/Motion.h
         displayapp/screens/Timer.h
+        displayapp/screens/Alarm.h
+        displayapp/Colors.h
         drivers/St7789.h
         drivers/SpiNorFlash.h
         drivers/SpiMaster.h
@@ -615,6 +628,7 @@ set(INCLUDE_FILES
         drivers/DebugPins.h
         drivers/InternalFlash.h
         drivers/Hrs3300.h
+        drivers/PinMap.h
         drivers/Bma421.h
         drivers/Bma421_C/bma4.c
         drivers/Bma421_C/bma423.c
@@ -637,6 +651,7 @@ set(INCLUDE_FILES
         components/ble/HeartRateService.h
         components/settings/Settings.h
         components/timer/TimerController.h
+        components/alarm/AlarmController.h
         drivers/Cst816s.h
         FreeRTOS/portmacro.h
         FreeRTOS/portmacro_cmsis.h
@@ -660,6 +675,7 @@ set(INCLUDE_FILES
         components/heartrate/Ptagc.h
         components/heartrate/HeartRateController.h
         components/motor/MotorController.h
+        touchhandler/TouchHandler.h
         )
 
 include_directories(

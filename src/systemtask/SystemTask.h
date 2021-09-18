@@ -8,6 +8,7 @@
 #include <heartratetask/HeartRateTask.h>
 #include <components/settings/Settings.h>
 #include <drivers/Bma421.h>
+#include <drivers/PinMap.h>
 #include <components/motion/MotionController.h>
 
 #include "SystemMonitor.h"
@@ -16,7 +17,9 @@
 #include "components/ble/NotificationManager.h"
 #include "components/motor/MotorController.h"
 #include "components/timer/TimerController.h"
+#include "components/alarm/AlarmController.h"
 #include "components/fs/FS.h"
+#include "touchhandler/TouchHandler.h"
 
 #ifdef PINETIME_IS_RECOVERY
   #include "displayapp/DisplayAppRecovery.h"
@@ -24,12 +27,13 @@
 #else
   #include "components/settings/Settings.h"
   #include "displayapp/DisplayApp.h"
-  #include "displayapp/LittleVgl.h"  
+  #include "displayapp/LittleVgl.h"
 #endif
 
 #include "drivers/Watchdog.h"
 #include "Messages.h"
 
+extern std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> NoInit_BackUpTime;
 namespace Pinetime {
   namespace Drivers {
     class Cst816S;
@@ -38,6 +42,9 @@ namespace Pinetime {
     class St7789;
     class TwiMaster;
     class Hrs3300;
+  }
+  namespace Controllers {
+    class TouchHandler;
   }
   namespace System {
     class SystemTask {
@@ -52,6 +59,7 @@ namespace Pinetime {
                  Controllers::Ble& bleController,
                  Controllers::DateTime& dateTimeController,
                  Controllers::TimerController& timerController,
+                 Controllers::AlarmController& alarmController,
                  Drivers::Watchdog& watchdog,
                  Pinetime::Controllers::NotificationManager& notificationManager,
                  Pinetime::Controllers::MotorController& motorController,
@@ -62,7 +70,8 @@ namespace Pinetime {
                  Pinetime::Controllers::HeartRateController& heartRateController,
                  Pinetime::Applications::DisplayApp& displayApp,
                  Pinetime::Applications::HeartRateTask& heartRateApp,
-                 Pinetime::Controllers::FS& fs);
+                 Pinetime::Controllers::FS& fs,
+                 Pinetime::Controllers::TouchHandler& touchHandler);
 
       void Start();
       void PushMessage(Messages msg);
@@ -92,10 +101,10 @@ namespace Pinetime {
       Pinetime::Components::LittleVgl& lvgl;
       Pinetime::Controllers::Battery& batteryController;
 
-
       Pinetime::Controllers::Ble& bleController;
       Pinetime::Controllers::DateTime& dateTimeController;
       Pinetime::Controllers::TimerController& timerController;
+      Pinetime::Controllers::AlarmController& alarmController;
       QueueHandle_t systemTasksMsgQueue;
       std::atomic<bool> isSleeping {false};
       std::atomic<bool> isGoingToSleep {false};
@@ -113,16 +122,8 @@ namespace Pinetime {
       Pinetime::Applications::DisplayApp& displayApp;
       Pinetime::Applications::HeartRateTask& heartRateApp;
       Pinetime::Controllers::FS& fs;
+      Pinetime::Controllers::TouchHandler& touchHandler;
       Pinetime::Controllers::NimbleController nimbleController;
-
-      static constexpr uint8_t pinSpiSck = 2;
-      static constexpr uint8_t pinSpiMosi = 3;
-      static constexpr uint8_t pinSpiMiso = 4;
-      static constexpr uint8_t pinSpiCsn = 25;
-      static constexpr uint8_t pinLcdDataCommand = 18;
-      static constexpr uint8_t pinButton = 13;
-      static constexpr uint8_t pinTouchIrq = 28;
-      static constexpr uint8_t pinPowerPresentIrq = 19;
 
       static void Process(void* instance);
       void Work();
@@ -131,13 +132,15 @@ namespace Pinetime {
       uint8_t bleDiscoveryTimer = 0;
       TimerHandle_t dimTimer;
       TimerHandle_t idleTimer;
+      TimerHandle_t measureBatteryTimer;
+      bool sendBatteryNotification = false;
       bool doNotGoToSleep = false;
 
       void GoToRunning();
       void UpdateMotion();
       bool stepCounterMustBeReset = false;
-      static constexpr TickType_t batteryNotificationPeriod = 1000 * 60 * 10; // 1 tick ~= 1ms. 1ms * 60 * 10 = 10 minutes
-      TickType_t batteryNotificationTick = 0;
+      static constexpr TickType_t batteryMeasurementPeriod = pdMS_TO_TICKS(10 * 60 * 1000);
+      TickType_t lastBatteryNotificationTime = 0;
 
 #if configUSE_TRACE_FACILITY == 1
       SystemMonitor<FreeRtosMonitor> monitor;

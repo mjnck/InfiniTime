@@ -12,6 +12,7 @@ namespace Pinetime {
       NotificationsPreview,
       Notifications,
       Timer,
+      Alarm,
       FlashLight,
       BatteryInfo,
       Music,
@@ -30,7 +31,8 @@ namespace Pinetime {
       SettingTimeFormat,
       SettingDisplay,
       SettingWakeUp,
-      SettingSteps
+      SettingSteps,
+      SettingPineTimeStyle
     };
   }
 }
