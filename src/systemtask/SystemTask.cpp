@@ -165,7 +165,7 @@ void SystemTask::Work() {
   pinConfig.skip_gpio_setup = true;
   pinConfig.hi_accuracy = false;
   pinConfig.is_watcher = false;
-  pinConfig.sense = (nrf_gpiote_polarity_t) NRF_GPIOTE_POLARITY_HITOLO;
+  pinConfig.sense = NRF_GPIOTE_POLARITY_LOTOHI;
   pinConfig.pull = (nrf_gpio_pin_pull_t) GPIO_PIN_CNF_PULL_Pulldown;
 
   nrfx_gpiote_in_init(PinMap::Button, &pinConfig, nrfx_gpiote_evt_handler);
@@ -315,9 +315,25 @@ void SystemTask::Work() {
           ReloadIdleTimer();
           displayApp.PushMessage(Pinetime::Applications::Display::Messages::TouchEvent);
           break;
-        case Messages::OnButtonEvent:
-          ReloadIdleTimer();
-          displayApp.PushMessage(Pinetime::Applications::Display::Messages::ButtonPushed);
+        case Messages::OnButtonPushed:
+          if (!isSleeping && !isGoingToSleep) {
+            displayApp.PushMessage(Pinetime::Applications::Display::Messages::ButtonPushed);
+          }
+          break;
+        case Messages::OnButtonLongPressed:
+          if (!isSleeping) {
+            displayApp.PushMessage(Pinetime::Applications::Display::Messages::ButtonLongPressed);
+          }
+          break;
+        case Messages::OnButtonLongerPressed:
+          if (!isSleeping) {
+            displayApp.PushMessage(Pinetime::Applications::Display::Messages::ButtonLongerPressed);
+          }
+          break;
+        case Messages::OnButtonDoubleClicked:
+          if (!isSleeping) {
+            displayApp.PushMessage(Pinetime::Applications::Display::Messages::ButtonDoubleClicked);
+          }
           break;
         case Messages::OnDisplayTaskSleeping:
           if (BootloaderVersion::IsValid()) {
@@ -354,6 +370,9 @@ void SystemTask::Work() {
             sendBatteryNotification = false;
             nimbleController.NotifyBatteryLevel(batteryController.PercentRemaining());
           }
+          break;
+        case Messages::ReloadIdleTimer:
+          ReloadIdleTimer();
           break;
 
         default:
@@ -400,20 +419,6 @@ void SystemTask::UpdateMotion() {
   motionController.Update(motionValues.x, motionValues.y, motionValues.z, motionValues.steps);
   if (motionController.ShouldWakeUp(isSleeping)) {
     GoToRunning();
-  }
-}
-
-void SystemTask::OnButtonPushed() {
-  if (isGoingToSleep)
-    return;
-  if (!isSleeping) {
-    NRF_LOG_INFO("[systemtask] Button pushed");
-    PushMessage(Messages::OnButtonEvent);
-  } else {
-    if (!isWakingUp) {
-      NRF_LOG_INFO("[systemtask] Button pushed, waking up");
-      GoToRunning();
-    }
   }
 }
 
