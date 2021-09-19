@@ -1,4 +1,5 @@
 #include "Label.h"
+#include "displayapp/Colors.h"
 
 using namespace Pinetime::Applications::Screens;
 
@@ -13,7 +14,7 @@ Label::Label(uint8_t screenID, uint8_t numScreens, Pinetime::Applications::Displ
 
     pageIndicatorBase = lv_line_create(lv_scr_act(), NULL);
     lv_obj_set_style_local_line_width(pageIndicatorBase, LV_LINE_PART_MAIN, LV_STATE_DEFAULT, 3);
-    lv_obj_set_style_local_line_color(pageIndicatorBase, LV_LINE_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0x111111));
+    lv_obj_set_style_local_line_color(pageIndicatorBase, LV_LINE_PART_MAIN, LV_STATE_DEFAULT, Colors::darkerGray);
     lv_obj_set_style_local_line_rounded(pageIndicatorBase, LV_LINE_PART_MAIN, LV_STATE_DEFAULT, true);
     lv_line_set_points(pageIndicatorBase, pageIndicatorBasePoints, 2);
 

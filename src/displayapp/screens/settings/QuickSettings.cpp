@@ -2,6 +2,7 @@
 #include "displayapp/DisplayApp.h"
 #include "displayapp/screens/Symbols.h"
 #include "displayapp/screens/BatteryIcon.h"
+#include "displayapp/Colors.h"
 
 using namespace Pinetime::Applications::Screens;
 
@@ -51,7 +52,7 @@ QuickSettings::QuickSettings(Pinetime::Applications::DisplayApp* app,
 
   lv_style_init(&btn_style);
   lv_style_set_radius(&btn_style, LV_STATE_DEFAULT, buttonHeight / 4);
-  lv_style_set_bg_color(&btn_style, LV_STATE_DEFAULT, lv_color_hex(0x111111));
+  lv_style_set_bg_color(&btn_style, LV_STATE_DEFAULT, Colors::darkerGray);
 
   btn1 = lv_btn_create(lv_scr_act(), nullptr);
   btn1->user_data = this;

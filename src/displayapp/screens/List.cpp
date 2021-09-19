@@ -1,6 +1,7 @@
 #include "List.h"
 #include "../DisplayApp.h"
 #include "Symbols.h"
+#include "displayapp/Colors.h"
 
 using namespace Pinetime::Applications::Screens;
 
@@ -20,7 +21,7 @@ List::List(uint8_t screenID,
   : Screen(app), settingsController {settingsController} {
 
   // Set the background to Black
-  lv_obj_set_style_local_bg_color(lv_scr_act(), LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, lv_color_make(0, 0, 0));
+  lv_obj_set_style_local_bg_color(lv_scr_act(), LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
 
   settingsController.SetSettingsMenu(screenID);
 
@@ -32,7 +33,7 @@ List::List(uint8_t screenID,
 
     pageIndicatorBase = lv_line_create(lv_scr_act(), NULL);
     lv_obj_set_style_local_line_width(pageIndicatorBase, LV_LINE_PART_MAIN, LV_STATE_DEFAULT, 3);
-    lv_obj_set_style_local_line_color(pageIndicatorBase, LV_LINE_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0x111111));
+    lv_obj_set_style_local_line_color(pageIndicatorBase, LV_LINE_PART_MAIN, LV_STATE_DEFAULT, Colors::darkerGray);
     lv_line_set_points(pageIndicatorBase, pageIndicatorBasePoints, 2);
 
     const uint16_t indicatorSize = LV_VER_RES / numScreens;
@@ -70,7 +71,7 @@ List::List(uint8_t screenID,
       itemApps[i] = lv_btn_create(container1, nullptr);
       lv_obj_set_style_local_bg_opa(itemApps[i], LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_20);
       lv_obj_set_style_local_radius(itemApps[i], LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 57);
-      lv_obj_set_style_local_bg_color(itemApps[i], LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_AQUA);
+      lv_obj_set_style_local_bg_color(itemApps[i], LV_BTN_PART_MAIN, LV_STATE_DEFAULT, Colors::accent);
 
       lv_obj_set_width(itemApps[i], LV_HOR_RES - 8);
       lv_obj_set_height(itemApps[i], 57);
