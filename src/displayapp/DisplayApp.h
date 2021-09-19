@@ -46,8 +46,7 @@ namespace Pinetime {
       enum class States { Idle, Running };
       enum class FullRefreshDirections { None, Up, Down, Left, Right, LeftAnim, RightAnim };
 
-      DisplayApp(Drivers::St7789& lcd,
-                 Components::LittleVgl& lvgl,
+      DisplayApp(Components::LittleVgl& lvgl,
                  Drivers::Cst816S&,
                  Controllers::Battery& batteryController,
                  Controllers::Ble& bleController,
@@ -71,7 +70,6 @@ namespace Pinetime {
       void Register(Pinetime::System::SystemTask* systemTask);
 
     private:
-      Pinetime::Drivers::St7789& lcd;
       Pinetime::Components::LittleVgl& lvgl;
       Pinetime::Drivers::Cst816S& touchPanel;
       Pinetime::Controllers::Battery& batteryController;

@@ -115,8 +115,7 @@ Pinetime::Controllers::FS fs {spiNorFlash};
 Pinetime::Controllers::Settings settingsController {fs};
 Pinetime::Controllers::MotorController motorController {};
 
-Pinetime::Applications::DisplayApp displayApp(lcd,
-                                              lvgl,
+Pinetime::Applications::DisplayApp displayApp(lvgl,
                                               touchPanel,
                                               batteryController,
                                               bleController,
