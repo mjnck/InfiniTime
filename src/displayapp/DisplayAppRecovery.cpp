@@ -9,8 +9,7 @@
 
 using namespace Pinetime::Applications;
 
-DisplayApp::DisplayApp(Drivers::St7789& lcd,
-                       Components::LittleVgl& lvgl,
+DisplayApp::DisplayApp(Components::LittleVgl& lvgl,
                        Drivers::Cst816S& touchPanel,
                        Controllers::Battery& batteryController,
                        Controllers::Ble& bleController,

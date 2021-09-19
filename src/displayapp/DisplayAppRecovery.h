@@ -42,8 +42,7 @@ namespace Pinetime {
   namespace Applications {
     class DisplayApp {
     public:
-      DisplayApp(Drivers::St7789& lcd,
-                 Components::LittleVgl& lvgl,
+      DisplayApp(Components::LittleVgl& lvgl,
                  Drivers::Cst816S&,
                  Controllers::Battery& batteryController,
                  Controllers::Ble& bleController,
