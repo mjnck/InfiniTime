@@ -226,7 +226,7 @@ void PineTimeStyle::Refresh() {
     lv_obj_realign(bleIcon);
   }
 
-  notificationState = notificatioManager.AreNewNotificationsAvailable();
+  notificationState = notificationManager.AreNewNotificationsAvailable();
   if (notificationState.IsUpdated()) {
     lv_label_set_text(notificationIcon, NotificationIcon::GetIcon(notificationState.Get()));
     lv_obj_realign(notificationIcon);
